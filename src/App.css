@@ -13,26 +13,30 @@
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+body{
+  margin: 0;
+  padding: 0;
 }
 
-.App-link {
-  color: #61dafb;
+.box {
+  border-style: solid;
+  border-color: #61dafb;
+  height: 75%;
+  padding: 10px 5px 80%;
+}
+.day {
+  display: inline-block;
+  border-style: solid;
+  border-color: red;
+  width: 15%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+
+.button-parent {
+  text-align: center;
+}
+.button {
+
+
+  margin-left: auto; margin-right:auto;
 }
