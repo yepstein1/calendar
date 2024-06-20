@@ -39,7 +39,7 @@ function App() {
         let isKeyPresent = checkKeyPresenceInArray(day.toString());
         if (isKeyPresent) {
 
-            let newTodo = todo.map(t => {
+            let newTodo = todo.map((t) => {
                 if (Object.keys(t).includes(day.toString())) {
                     t[day].push(e[e.length - 1]);
 
@@ -60,7 +60,7 @@ function App() {
 
     let days = []
     for (let i = 0; i < num; i++) {
-        days.push(<Days num={i} date={date} handleUpdateTodo={handleUpdateTodo}/>)
+        days.push(<Days num={i} date={date} handleUpdateTodo={handleUpdateTodo} />)
     }
     return (
         <div>
@@ -80,25 +80,20 @@ function App() {
     function Buttons() {
         //need to think about logic of arangement of components
 
-        function previousMonth() {
+        function changeMonth(i) {
             console.log("hi from func")
-            setDate(handleMonthChange(-1))
-        }
-
-
-        function handleMonthChange(i) {
-
+           // setDate(handleMonthChange(i))
             let nextDate = new Date()
-            nextDate.setMonth(date.getMonth() - 1);
-            console.log(nextDate)
-            return nextDate;
-
-
+            nextDate.setMonth(date.getMonth() +i);
+            setDate(nextDate)
         }
+
+
+      
 
         return <div className='button-parent'>
-            <button className='button' onClick={previousMonth}> Previous Month</button>
-            <button className='button'> Next Month</button>
+            <button className='button-change-month' onClick={()=>{changeMonth(-1)}}>  Previous Month</button>
+            <button className='button-change-month' onClick ={()=>{changeMonth(1)}}> Next Month</button>
         </div>
     }
 
@@ -119,14 +114,15 @@ function Days(props) {
 
 
         <div className="button-parent">
-            {props.date.toLocaleString('default', {month: 'long'})} {props.num}
+            {props.date.toLocaleString('default', {month: 'long'})} {props.num+1}
+            <br/>
             {inputArray}
-            <button className="button" onClick={updateCounter}>
+            <button className="button" onClick={addInputLIne}>
                 Add new Line
 
             </button>
             <br/>
-            <button onClick={updateTodo}>
+            <button className="button" onClick={updateTodo}>
                 Save
 
             </button>
@@ -136,8 +132,9 @@ function Days(props) {
         {todos}
     </div>
 
-    function updateCounter() {
-        let input = <input onChange={onTodoInputted}
+// adds new line to cell
+    function addInputLIne() {
+        let input = <input  onChange={onTodoInputted}
 
         ></input>
         setInputArray([...inputArray, input])
