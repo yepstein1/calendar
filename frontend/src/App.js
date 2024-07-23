@@ -5,6 +5,7 @@ todo - fix css
 import './App.css';
 import {useState} from "react";
 import SubmitButton from "./SubmitButton"
+import { transformTodo } from './transformTodo';
 
 
 function App() {
@@ -34,7 +35,8 @@ function App() {
     function handleUpdateTodo(e, numb) {
         let obj = {}
         console.log(numb)
-        let day = new Date(date.getFullYear(), date.getMonth(), numb)
+        let day = new Date(date.getFullYear(), date.getMonth(), numb).toLocaleDateString()
+        console.log(day)
 
         let checkKeyPresenceInArray = key => todo.some(obj => Object.keys(obj).includes(key));
         let isKeyPresent = checkKeyPresenceInArray(day.toString());
@@ -92,8 +94,7 @@ function App() {
         //need to think about logic of arangement of components
 
         function changeMonth(i) {
-            console.log("hi from func")
-           // setDate(handleMonthChange(i))
+           
             let nextDate = new Date()
             nextDate.setMonth(date.getMonth() +i);
             setDate(nextDate)
@@ -108,9 +109,48 @@ function App() {
         </div>
     }
 
- function persitsState() {
-console.log(JSON.stringify(todo))
- }
+ async function persitsState() {
+//console.log(JSON.stringify(todo))
+
+const options = {
+    method: 'POST',
+    headers: {
+    'Content-Type': 'application/json',
+   
+      
+    },
+    body: JSON.stringify(transformTodo(todo)),
+    };
+
+
+  /*await fetch('https://nr07mr1q3d.execute-api.us-east-1.amazonaws.com/Prod/hello/',options)
+  .then(data => {
+      if (!data.ok) {
+        console.log(JSON.stringify(data))
+        throw Error(data.status);
+      
+       }
+       console.log(JSON.stringify(data))
+       return data
+      }).then(data => {
+      
+        console.log(JSON.stringify(data.body))
+        console.log("hi from then")
+      
+      }).catch(e => {
+      console.log(e);
+      });
+ 
+      
+      had to change from the above commented out code to be able to pring out a result from the return of the fetch method
+*/
+let resp = await fetch('https://nr07mr1q3d.execute-api.us-east-1.amazonaws.com/Prod/hello/',options);
+let res = await resp.text();
+
+console.log(JSON.parse(res))
+
+}
+
 }
 
 function Days(props) {
@@ -163,6 +203,5 @@ function Days(props) {
     }
 
 }
-
 
 export default App;

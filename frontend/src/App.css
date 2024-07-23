@@ -58,6 +58,20 @@ color:white;
   
   
 }
+
+.button:focus{
+
+  
+    background-color:  whitesmoke;
+  
+    
+    
+  
+    
+    
+  }
+
+
 .button-change-month {
 
   color:white;
