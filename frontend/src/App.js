@@ -3,205 +3,177 @@
 todo - fix css
 */
 import './App.css';
-import {useState} from "react";
+import { useEffect, useState } from "react";
 import SubmitButton from "./SubmitButton"
 import { transformTodo } from './transformTodo';
 
+import Month from './components/Month';
+
 
 function App() {
+    /**
+     * 
+     * @type {Date} the date state vairiable holds todays date
+     */
     let [date, setDate] = useState(new Date());
     let [todo, setTodo] = useState([]);
 
 
-    const daysOfMonth = {
-        0: 31,
-        1: 28,
-        2: 31,
-        3: 30,
-        4: 31,
-        5: 31,
-        6: 30,
-        7: 31,
-        8: 31,
-        9: 30,
-        10: 31,
-        11: 30,
-        21: 30
-    }
 
-    const month = date.getMonth()
-    const num = daysOfMonth[month]
-
-    function handleUpdateTodo(e, numb) {
+    /**
+     * 
+     * @param {*} year - the year associated with this task
+     * @param {*} month the month associated with this task
+     * @param {*} dayOfMonth   the  day of the month associated with this task -all the dates here are passed in from the Dayc component
+     * @param {*} dailytask  the actual task - this is passed in from the Days component
+     */
+    let setTodoInApp = (year, month, dayOfMonth, dailytask) => {
+        // need to fix when user clicks save and then adds another line to the same date and presses button again
         let obj = {}
-        console.log(numb)
-        let day = new Date(date.getFullYear(), date.getMonth(), numb).toLocaleDateString()
-        console.log(day)
 
+        let day = new Date(year, month, dayOfMonth + 1)
+     
         let checkKeyPresenceInArray = key => todo.some(obj => Object.keys(obj).includes(key));
-        let isKeyPresent = checkKeyPresenceInArray(day.toString());
+        let isKeyPresent = checkKeyPresenceInArray(day);
         if (isKeyPresent) {
 
             let newTodo = todo.map((t) => {
-                if (Object.keys(t).includes(day.toString())) {
-                    t[day].push(e[e.length - 1]);
+
+                if (Object.keys(t).includes(day)) {
+                    t[day].push(todo);
 
                 }
                 return t;
 
             })
 
-            setTodo(newTodo)
+            setTodo(oldTodo => [...oldTodo, newTodo])
 
         } else {
-            obj[day] = [...e];
-            setTodo([...todo, obj]);
+            console.log("hi from else")
+            obj[day] = [...dailytask];
+            console.log(`todo in else ${todo}`)
+            setTodo(
+                oldTodo => [...oldTodo, obj]
+            )
+
         }
 
+
     }
+    let [monthComponentArray, setMonthComponentArray] = useState([<Month year={date.getFullYear()} date={date} setTodoInApp={setTodoInApp} />])
+
+    console.log(` current date :${date}`)
+    monthComponentArray.map(x=> console.log(` month component array ${x.props.date.getMonth()}`))
+    function changeMonth(i) {
+
+        let nextDate = new Date()
+        
+        let newMonth = date.getMonth();
+        newMonth= newMonth+i;
+       nextDate.setMonth(newMonth);
+    
+       let month = newMonth
+       
+        let year = nextDate.getFullYear()
+        setDate(nextDate)
+        console.log(` new date :${nextDate}`)
+
+        let test = (x) => {
+            return x.props.year === year && x.props.date.getMonth() === month
+        }
+
+        if (!monthComponentArray.some(test
 
 
-    let days = []
-    for (let i = 0; i < num; i++) {
-        days.push(<Days num={i} date={date} handleUpdateTodo={handleUpdateTodo} />)
+
+        )) {
+            // I use nextDate and not date because of async state updaye
+            let monthComponent = <Month year={nextDate.getFullYear()} date={nextDate} setTodoInApp={setTodoInApp} />
+            //month = monthComponent
+            setMonthComponentArray((prevState) => [...prevState, monthComponent])
+
+        }
+        
+ 
     }
+
+//console.log(monthComponentArray[0].props)
+
     return (
         <div>
-            <Buttons date={date}/>
-            <div className='box'>
 
 
-                {days}
-                <br/>
-                <div>
-                <div className='submit-button-cont'>
-            <SubmitButton handleSubmitClick={persitsState}/>
 
+            <div className='button-parent'>
+                <button className='button-change-month' onClick={() => { changeMonth(-1) }}>  Previous Month</button>
+                <button className='button-change-month' onClick={() => { changeMonth(1) }}> Next Month</button>
             </div>
-                </div>
-             
-                </div>
-            
-                <br/>
+            < div className='box'>
+
+{
+    
+
+        monthComponentArray.find(x => x.props.year === date.getFullYear() & x.props.date.getMonth() === date.getMonth())
+
+}
+
+        
+
+
                 
-           
-       
+                <br />
+
+                <div className='submit-button-cont'>
+                    <SubmitButton handleSubmitClick={persitsState} />
+
+                </div>
+
+                <br />
+            </div>
+
+
+
+
+
         </div>
 
     );
 
-    function Buttons() {
-        //need to think about logic of arangement of components
 
-        function changeMonth(i) {
-           
-            let nextDate = new Date()
-            nextDate.setMonth(date.getMonth() +i);
-            setDate(nextDate)
-        }
+    //need to think about logic of arangement of components
 
 
-      
 
-        return <div className='button-parent'>
-            <button className='button-change-month' onClick={()=>{changeMonth(-1)}}>  Previous Month</button>
-            <button className='button-change-month' onClick ={()=>{changeMonth(1)}}> Next Month</button>
-        </div>
+
+
+
+
+
+
+    async function persitsState() {
+        //console.log(JSON.stringify(todo))
+
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+
+
+            },
+            body: JSON.stringify(transformTodo(todo)),
+        };
+
+
+
+        let resp = await fetch('https://nr07mr1q3d.execute-api.us-east-1.amazonaws.com/Prod/hello/', options);
+        let res = await resp.text();
+
+        console.log(JSON.parse(res))
+
     }
-
- async function persitsState() {
-//console.log(JSON.stringify(todo))
-
-const options = {
-    method: 'POST',
-    headers: {
-    'Content-Type': 'application/json',
-   
-      
-    },
-    body: JSON.stringify(transformTodo(todo)),
-    };
-
-
-  /*await fetch('https://nr07mr1q3d.execute-api.us-east-1.amazonaws.com/Prod/hello/',options)
-  .then(data => {
-      if (!data.ok) {
-        console.log(JSON.stringify(data))
-        throw Error(data.status);
-      
-       }
-       console.log(JSON.stringify(data))
-       return data
-      }).then(data => {
-      
-        console.log(JSON.stringify(data.body))
-        console.log("hi from then")
-      
-      }).catch(e => {
-      console.log(e);
-      });
- 
-      
-      had to change from the above commented out code to be able to pring out a result from the return of the fetch method
-*/
-let resp = await fetch('https://nr07mr1q3d.execute-api.us-east-1.amazonaws.com/Prod/hello/',options);
-let res = await resp.text();
-
-console.log(JSON.parse(res))
-
 }
 
-}
 
-function Days(props) {
-
-
-    let [inputArray, setInputArray] = useState([<input
-        onChange={onTodoInputted}
-    ></input>])
-
-    let [todos, setTodos] = useState([])
-
-
-    return <div className="day">
-
-
-        <div className="button-parent">
-            {props.date.toLocaleString('default', {month: 'long'})} {props.num+1}
-            <br/>
-            {inputArray}
-            <button className="button" onClick={addInputLIne}>
-                Add new Line
-
-            </button>
-            <br/>
-            <button className="button" onClick={updateTodo}>
-                Save
-
-            </button>
-
-
-        </div>
-        {todos}
-    </div>
-
-// adds new line to cell
-    function addInputLIne() {
-        let input = <input  onChange={onTodoInputted}
-
-        ></input>
-        setInputArray([...inputArray, input])
-    }
-
-    function updateTodo() {
-        props.handleUpdateTodo(todos, props.num)
-    }
-
-    function onTodoInputted(e) {
-        console.log(`in updateontodo ${e}`)
-        setTodos([...todos, e.target.value])
-    }
-
-}
 
 export default App;
