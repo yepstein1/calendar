@@ -1,4 +1,4 @@
-import {useState,useEffect, useRef, useContext} from "react";
+import {useState, useContext} from "react";
 import { v4 as uuidv4 } from 'uuid';
 import { taskContext } from "./context-tasks";
 
@@ -13,30 +13,17 @@ import { taskContext } from "./context-tasks";
  */
 export default function Days({year,date,dayOfMonth,handleUpdateTodo,todoList}) {
     let tasks = useContext(taskContext)
-let renderTimes = useRef(0)
-    useEffect(()=> {
-        renderTimes.current++
-       // setRenderTimes(temp)
-       // console.log("hi from day render : " +renderTimes.current)
-    }
-)
-    /**
+
+     /**
      * State to store each days tasks
      */
-
-//console.log(`in day comp use context ${JSON.stringify(useContext(taskContext))}`)
-console.log(`get default value : ${getDefaultValue(new Date(date.getFullYear(),date.getMonth(),dayOfMonth+1))}`)
-
-    let [dailyTasks, setDailyTasks] = useState([])
+ let [dailyTasks, setDailyTasks] = useState([])
     
 
        // array of inputs for each day
     let [inputArray, setInputArray] = useState([<input type="text"
         onChange={onTodoInputted}
         key={uuidv4()} defaultValue={getDefaultValue(new Date(date.getFullYear(),date.getMonth(),dayOfMonth+1))} ></input>])
-
-    
-
     return <div className="day" key ={todoList[todoList.length-1]}>
 
 
@@ -57,22 +44,18 @@ console.log(`get default value : ${getDefaultValue(new Date(date.getFullYear(),d
 
     </button>
     
- <p>{JSON.stringify(getDefaultValue(new Date(date.getFullYear(),date.getMonth(),dayOfMonth+1))) && ''}</p>
+
 </div>
 
 </div>
         
-    
-    
-
 // adds new line to cell
     function addInputLIne() {
         let input = <input  onChange={onTodoInputted}
 
         key={uuidv4()} defaultValue={getDefaultValue(new Date(date.getFullYear(),date.getMonth(),dayOfMonth+1))} type ="text"></input>
         setInputArray([...inputArray, input])
-      
-        
+           
     }
 
    
@@ -86,7 +69,12 @@ console.log(`get default value : ${getDefaultValue(new Date(date.getFullYear(),d
     function getDefaultValue(date)
     {
      // search through tasks and see if ther is a task that matched today's date
-        let res= tasks.find( x =>  Object.keys(x).toString() === date.toString())       
+     tasks.map(x =>{
+        console.log(` task : ${Object.keys(x)}`)
+     })
+     date = date.toISOString().split('T')[0];
+     console.log(` date : ${date}`)
+        let res= tasks.find( x =>  Object.keys(x) == date)       
       return  res ?  res[date] : ''
     }
 

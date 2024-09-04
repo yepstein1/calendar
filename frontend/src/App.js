@@ -37,7 +37,7 @@ function App() {
         let obj = {}
 
         let day = new Date(year, month, dayOfMonth + 1)
-     
+    day= day.toISOString().split('T')[0]
         let checkKeyPresenceInArray = key => todo.some(obj => Object.keys(obj).includes(key));
         let isKeyPresent = checkKeyPresenceInArray(day);
         if (isKeyPresent) {
@@ -159,7 +159,7 @@ function App() {
     //need to think about logic of arangement of components
 
     async function persitsState() {
-        //console.log(JSON.stringify(todo))
+        console.log(' from persist state' + JSON.stringify(todo))
 
         const options = {
             method: 'POST',
