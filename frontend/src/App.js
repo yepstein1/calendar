@@ -3,9 +3,12 @@
 todo - fix css
 */
 import './App.css';
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import SubmitButton from "./SubmitButton"
 import { transformTodo } from './transformTodo';
+import { v4 as uuidv4 } from 'uuid';
+import { taskContext } from './components/context-tasks';
+
 
 import Month from './components/Month';
 
@@ -19,6 +22,7 @@ function App() {
     let [todo, setTodo] = useState([]);
 
 
+//useEffect(()=> console.log("hi from app render"))
 
     /**
      * 
@@ -28,6 +32,7 @@ function App() {
      * @param {*} dailytask  the actual task - this is passed in from the Days component
      */
     let setTodoInApp = (year, month, dayOfMonth, dailytask) => {
+        console.log(`${JSON.stringify(todo)}: from setToDoApp`)
         // need to fix when user clicks save and then adds another line to the same date and presses button again
         let obj = {}
 
@@ -50,21 +55,37 @@ function App() {
             setTodo(oldTodo => [...oldTodo, newTodo])
 
         } else {
-            console.log("hi from else")
+           // console.log("hi from else")
             obj[day] = [...dailytask];
-            console.log(`todo in else ${todo}`)
+            //console.log(`todo in else ${todo}`)
             setTodo(
-                oldTodo => [...oldTodo, obj]
+                (oldTodo) =>   [...oldTodo, obj]
+                    
             )
+            
 
         }
 
 
     }
-    let [monthComponentArray, setMonthComponentArray] = useState([<Month year={date.getFullYear()} date={date} setTodoInApp={setTodoInApp} />])
 
-    console.log(` current date :${date}`)
-    monthComponentArray.map(x=> console.log(` month component array ${x.props.date.getMonth()}`))
+    let getDefaultValue = (param)=> {
+// currently just trying to see if I can get the most up to date value of todo in day comp
+       // console.log(JSON.stringify(todo))
+        // console.log('from  get defaultValue from parent component`') 
+       
+       // return param.toString()
+      let res;
+       todo.forEach(element => {
+        res += element
+       });
+
+       return res && ''
+    }
+    let [monthComponentArray, setMonthComponentArray] = useState([<Month year={date.getFullYear()} date={date} setTodoInApp={setTodoInApp} key={ uuidv4()} todoList={todo} getDefaultValue={getDefaultValue} />])
+
+    //console.log(` current date :${date}`)
+    //monthComponentArray.map(x=> console.log(` month component array ${x.props.date.getMonth()}`))
     function changeMonth(i) {
 
         let nextDate = new Date()
@@ -77,7 +98,7 @@ function App() {
        
         let year = nextDate.getFullYear()
         setDate(nextDate)
-        console.log(` new date :${nextDate}`)
+        //console.log(` new date :${nextDate}`)
 
         let test = (x) => {
             return x.props.year === year && x.props.date.getMonth() === month
@@ -88,8 +109,9 @@ function App() {
 
 
         )) {
+            const monthComp = <Month year={nextDate.getFullYear()} date={nextDate} setTodoInApp={setTodoInApp} key={uuidv4()} todoList={todo} getDefaultValue={getDefaultValue} />;
             // I use nextDate and not date because of async state updaye
-            let monthComponent = <Month year={nextDate.getFullYear()} date={nextDate} setTodoInApp={setTodoInApp} />
+            let monthComponent = monthComp
             //month = monthComponent
             setMonthComponentArray((prevState) => [...prevState, monthComponent])
 
@@ -98,58 +120,43 @@ function App() {
  
     }
 
-//console.log(monthComponentArray[0].props)
-
     return (
-        <div>
+        <taskContext.Provider value={todo}>
+<div>
 
-
+{JSON.stringify(todo)}
 
             <div className='button-parent'>
                 <button className='button-change-month' onClick={() => { changeMonth(-1) }}>  Previous Month</button>
                 <button className='button-change-month' onClick={() => { changeMonth(1) }}> Next Month</button>
             </div>
-            < div className='box'>
+            < div >
 
 {
     
 
         monthComponentArray.find(x => x.props.year === date.getFullYear() & x.props.date.getMonth() === date.getMonth())
 
-}
-
-        
-
-
-                
+}             
                 <br />
 
-                <div className='submit-button-cont'>
-                    <SubmitButton handleSubmitClick={persitsState} />
+                <div>
+                    <SubmitButton handleSubmitClick={persitsState} className="submit-btn-cmp" />
 
                 </div>
 
                 <br />
             </div>
 
-
-
-
-
         </div>
+
+        </taskContext.Provider>
+        
 
     );
 
 
     //need to think about logic of arangement of components
-
-
-
-
-
-
-
-
 
     async function persitsState() {
         //console.log(JSON.stringify(todo))
@@ -169,7 +176,7 @@ function App() {
         let resp = await fetch('https://nr07mr1q3d.execute-api.us-east-1.amazonaws.com/Prod/hello/', options);
         let res = await resp.text();
 
-        console.log(JSON.parse(res))
+        //console.log(JSON.parse(res))
 
     }
 }

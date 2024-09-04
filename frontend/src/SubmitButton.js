@@ -3,7 +3,7 @@ export default function SubmitButton(props)
 {
     return (
 <>
-    <button className="button" onClick={props.handleSubmitClick}>Submit</button>
+    <button className="submit-btn-cmp" onClick={props.handleSubmitClick}>Save to DB</button>
     </>
 
     );

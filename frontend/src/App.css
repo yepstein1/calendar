@@ -21,10 +21,11 @@ body{
 .box {
   display: grid;
   grid-template-columns: repeat(7,auto);
-  border-style: solid;
-  border-color: #61dafb;
+  border-style: none;
+  
   height: 75%;
-  padding: 10px 5px 80%;
+  
+  padding: 10px 5px;
 }
 .day {
   
@@ -42,7 +43,22 @@ body{
 }
 
 .submit-button-cont {
+
   text-align: center;
+  
+
+}
+.submit-btn-cmp {
+  width: 180px;
+  height: 40px;
+  left: 50%;
+  position: relative;
+  
+bottom:0;
+background-color:  #4681f4;
+border-radius: 100px;
+  border: none;
+  display: table-cell; vertical-align: bottom;
 
 }
 

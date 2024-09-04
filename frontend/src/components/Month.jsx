@@ -1,15 +1,16 @@
 
 import Days from './Days'
+import { v4 as uuidv4 } from 'uuid';
+
+
 
 /**
  * @param {any} year year passed in from App component
  *  @param {Date} date passed in from App component
  * @param {function} setTodoInApp function passed in from App component to lift state up
  */
-export default function Month({year,date,setTodoInApp})
+export default function Month({year,date,setTodoInApp,todoList,getDefaultValue})
 {
-    
-
   
     const daysOfMonth = {
         0: 31,
@@ -37,10 +38,10 @@ export default function Month({year,date,setTodoInApp})
     */
     let days = []
     for (let i = 0; i < dayOfMonth; i++) {
-        days.push(<Days dayOfMonth={i} date={date}   handleUpdateTodo={setTodoInApp}  year ={year}/>)
+        days.push(<Days dayOfMonth={i} date={date}   handleUpdateTodo={setTodoInApp}  year ={year} key ={uuidv4()} todoList={todoList}   getDefaultValue={getDefaultValue} />)
     }
     return (
-        <div>        
+        <div className="box" key ={todoList[todoList.length-1]}>        
                 {days}
              
         </div>
