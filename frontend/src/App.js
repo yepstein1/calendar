@@ -3,7 +3,7 @@
 todo - fix css
 */
 import './App.css';
-import { useCallback, useEffect, useRef, useState } from "react";
+import {  useState } from "react";
 import SubmitButton from "./SubmitButton"
 import { transformTodo } from './transformTodo';
 import { v4 as uuidv4 } from 'uuid';
@@ -98,7 +98,7 @@ function App() {
        
         let year = nextDate.getFullYear()
         setDate(nextDate)
-        //console.log(` new date :${nextDate}`)
+      
 
         let test = (x) => {
             return x.props.year === year && x.props.date.getMonth() === month

@@ -9,7 +9,7 @@ import { taskContext } from "./context-tasks";
  * 
  * @param {*} year passed in from App=> Month
  * @param {Date} date passed in from App=> Month
- * @param {function} handleUpdateTodo passed in from App=> Month to lift state u[p
+ * @param {function} handleUpdateTodo passed in from App=> Month to lift state up
  */
 export default function Days({year,date,dayOfMonth,handleUpdateTodo,todoList}) {
     let tasks = useContext(taskContext)
@@ -22,7 +22,7 @@ export default function Days({year,date,dayOfMonth,handleUpdateTodo,todoList}) {
 
        // array of inputs for each day
     let [inputArray, setInputArray] = useState([<input type="text"
-        onChange={onTodoInputted}
+        onChange={(e)=>handleUpdateTodo(year,date.getMonth(),dayOfMonth,e.target.value)}
         key={uuidv4()} defaultValue={getDefaultValue(new Date(date.getFullYear(),date.getMonth(),dayOfMonth+1))} ></input>])
     return <div className="day" key ={todoList[todoList.length-1]}>
 
