@@ -11,7 +11,7 @@ import { taskContext } from "./context-tasks";
  * @param {Date} date passed in from App=> Month
  * @param {function} handleUpdateTodo passed in from App=> Month to lift state up
  */
-export default function Days({year,date,dayOfMonth,handleUpdateTodo,todoList}) {
+export default function Days({year,date,dayOfMonth,handleUpdateTodo}) {
     let tasks = useContext(taskContext)
 
      /**
@@ -22,9 +22,9 @@ export default function Days({year,date,dayOfMonth,handleUpdateTodo,todoList}) {
 
        // array of inputs for each day
     let [inputArray, setInputArray] = useState([<input type="text"
-        onChange={(e)=>handleUpdateTodo(year,date.getMonth(),dayOfMonth,e.target.value)}
+        onChange={onTodoInputted}
         key={uuidv4()} defaultValue={getDefaultValue(new Date(date.getFullYear(),date.getMonth(),dayOfMonth+1))} ></input>])
-    return <div className="day" key ={todoList[todoList.length-1]}>
+    return <div className="day" >
 
 
 <div className="button-parent">
@@ -39,7 +39,12 @@ export default function Days({year,date,dayOfMonth,handleUpdateTodo,todoList}) {
 
     </button>
     
-    <button className="button" onClick={()=>handleUpdateTodo(year,date.getMonth(),dayOfMonth,dailyTasks)}>
+    <button className="button" onClick={()=>{handleUpdateTodo(year,date.getMonth(),dayOfMonth,dailyTasks)
+
+
+
+
+    }}>
         Save to App state
 
     </button>
@@ -70,10 +75,10 @@ export default function Days({year,date,dayOfMonth,handleUpdateTodo,todoList}) {
     {
      // search through tasks and see if ther is a task that matched today's date
      tasks.map(x =>{
-        console.log(` task : ${Object.keys(x)}`)
+       // console.log(` task : ${Object.keys(x)}`)
      })
      date = date.toISOString().split('T')[0];
-     console.log(` date : ${date}`)
+    // console.log(` date : ${date}`)
         let res= tasks.find( x =>  Object.keys(x) == date)       
       return  res ?  res[date] : ''
     }

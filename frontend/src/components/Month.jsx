@@ -38,10 +38,10 @@ export default function Month({year,date,setTodoInApp,todoList,getDefaultValue})
     */
     let days = []
     for (let i = 0; i < dayOfMonth; i++) {
-        days.push(<Days dayOfMonth={i} date={date}   handleUpdateTodo={setTodoInApp}  year ={year} key ={uuidv4()} todoList={todoList}   getDefaultValue={getDefaultValue} />)
+        days.push(<Days dayOfMonth={i} date={date}   handleUpdateTodo={setTodoInApp}  year ={year} key ={uuidv4()}    getDefaultValue={getDefaultValue} />)
     }
     return (
-        <div className="box" key ={todoList[todoList.length-1]}>        
+        <div className="box" >        
                 {days}
              
         </div>

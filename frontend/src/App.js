@@ -3,7 +3,7 @@
 todo - fix css
 */
 import './App.css';
-import {  useState } from "react";
+import {  useEffect, useState } from "react";
 import SubmitButton from "./SubmitButton"
 import { transformTodo } from './transformTodo';
 import { v4 as uuidv4 } from 'uuid';
@@ -19,10 +19,13 @@ function App() {
      * @type {Date} the date state vairiable holds todays date
      */
     let [date, setDate] = useState(new Date());
+    //let nextDate =date;
+    // still need this as state I believe to show preivously loaded states
     let [todo, setTodo] = useState([]);
 
 
-//useEffect(()=> console.log("hi from app render"))
+
+
 
     /**
      * 
@@ -31,40 +34,24 @@ function App() {
      * @param {*} dayOfMonth   the  day of the month associated with this task -all the dates here are passed in from the Dayc component
      * @param {*} dailytask  the actual task - this is passed in from the Days component
      */
-    let setTodoInApp = (year, month, dayOfMonth, dailytask) => {
-        console.log(`${JSON.stringify(todo)}: from setToDoApp`)
+    let  setTodoInApp =  async (year, month, dayOfMonth, dailytask) => {
+        
         // need to fix when user clicks save and then adds another line to the same date and presses button again
         let obj = {}
-
+       
         let day = new Date(year, month, dayOfMonth + 1)
     day= day.toISOString().split('T')[0]
-        let checkKeyPresenceInArray = key => todo.some(obj => Object.keys(obj).includes(key));
-        let isKeyPresent = checkKeyPresenceInArray(day);
-        if (isKeyPresent) {
+    let ref=[];
+    dailytask.forEach(x=> 
+    {
+ref.push({[day] : x})
+    }
+    )
+  
+        
 
-            let newTodo = todo.map((t) => {
-
-                if (Object.keys(t).includes(day)) {
-                    t[day].push(todo);
-
-                }
-                return t;
-
-            })
-
-            setTodo(oldTodo => [...oldTodo, newTodo])
-
-        } else {
-           // console.log("hi from else")
-            obj[day] = [...dailytask];
-            //console.log(`todo in else ${todo}`)
-            setTodo(
-                (oldTodo) =>   [...oldTodo, obj]
-                    
-            )
-            
-
-        }
+       console.log(`ref is ${JSON.stringify(ref)} type is ${typeof ref}`)
+        persitsState(ref)
 
 
     }
@@ -82,10 +69,7 @@ function App() {
 
        return res && ''
     }
-    let [monthComponentArray, setMonthComponentArray] = useState([<Month year={date.getFullYear()} date={date} setTodoInApp={setTodoInApp} key={ uuidv4()} todoList={todo} getDefaultValue={getDefaultValue} />])
-
-    //console.log(` current date :${date}`)
-    //monthComponentArray.map(x=> console.log(` month component array ${x.props.date.getMonth()}`))
+    
     function changeMonth(i) {
 
         let nextDate = new Date()
@@ -94,28 +78,11 @@ function App() {
         newMonth= newMonth+i;
        nextDate.setMonth(newMonth);
     
-       let month = newMonth
        
-        let year = nextDate.getFullYear()
         setDate(nextDate)
       
 
-        let test = (x) => {
-            return x.props.year === year && x.props.date.getMonth() === month
-        }
-
-        if (!monthComponentArray.some(test
-
-
-
-        )) {
-            const monthComp = <Month year={nextDate.getFullYear()} date={nextDate} setTodoInApp={setTodoInApp} key={uuidv4()} todoList={todo} getDefaultValue={getDefaultValue} />;
-            // I use nextDate and not date because of async state updaye
-            let monthComponent = monthComp
-            //month = monthComponent
-            setMonthComponentArray((prevState) => [...prevState, monthComponent])
-
-        }
+       
         
  
     }
@@ -131,20 +98,11 @@ function App() {
                 <button className='button-change-month' onClick={() => { changeMonth(1) }}> Next Month</button>
             </div>
             < div >
-
-{
-    
-
-        monthComponentArray.find(x => x.props.year === date.getFullYear() & x.props.date.getMonth() === date.getMonth())
-
-}             
+            <Month year={date.getFullYear()} date={date} setTodoInApp={setTodoInApp} key={uuidv4()}  getDefaultValue={getDefaultValue} />;
+          
                 <br />
 
-                <div>
-                    <SubmitButton handleSubmitClick={persitsState} className="submit-btn-cmp" />
-
-                </div>
-
+               
                 <br />
             </div>
 
@@ -158,8 +116,8 @@ function App() {
 
     //need to think about logic of arangement of components
 
-    async function persitsState() {
-        console.log(' from persist state' + JSON.stringify(todo))
+    async function persitsState(ref) {
+        
 
         const options = {
             method: 'POST',
@@ -168,7 +126,7 @@ function App() {
 
 
             },
-            body: JSON.stringify(transformTodo(todo)),
+            body: JSON.stringify(transformTodo(ref)),
         };
 
 
