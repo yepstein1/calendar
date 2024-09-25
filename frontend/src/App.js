@@ -4,7 +4,7 @@ todo - fix css
 */
 import './App.css';
 import {  useEffect, useState } from "react";
-import SubmitButton from "./SubmitButton"
+
 import { transformTodo } from './transformTodo';
 import { v4 as uuidv4 } from 'uuid';
 import { taskContext } from './components/context-tasks';
@@ -19,11 +19,18 @@ function App() {
      * @type {Date} the date state vairiable holds todays date
      */
     let [date, setDate] = useState(new Date());
-    //let nextDate =date;
-    // still need this as state I believe to show preivously loaded states
+  
     let [todo, setTodo] = useState([]);
+    let [savedTasks,setSavedTasks]  = useState([]);
 
+    useEffect(()=>
+    {
+        getTasksFromDB()
+    },[date]
+    )
+   
 
+    
 
 
 
@@ -37,11 +44,12 @@ function App() {
     let  setTodoInApp =  async (year, month, dayOfMonth, dailytask) => {
         
         // need to fix when user clicks save and then adds another line to the same date and presses button again
-        let obj = {}
+       // let obj = {}
        
-        let day = new Date(year, month, dayOfMonth + 1)
+        let day = new Date(year, month, dayOfMonth+1)
     day= day.toISOString().split('T')[0]
     let ref=[];
+    console.log(day)
     dailytask.forEach(x=> 
     {
 ref.push({[day] : x})
@@ -50,7 +58,7 @@ ref.push({[day] : x})
   
         
 
-       console.log(`ref is ${JSON.stringify(ref)} type is ${typeof ref}`)
+       
         persitsState(ref)
 
 
@@ -79,7 +87,12 @@ ref.push({[day] : x})
        nextDate.setMonth(newMonth);
     
        
-        setDate(nextDate)
+        setDate(()=> {
+            let temp =nextDate
+return temp
+
+        })
+        //getTasksFromDB()
       
 
        
@@ -88,7 +101,8 @@ ref.push({[day] : x})
     }
 
     return (
-        <taskContext.Provider value={todo}>
+        <taskContext.Provider value={savedTasks}>
+            <p>created functionality that gets saved tasks from db and dsaved it to state and context - now need to read them into correct dates</p>
 <div>
 
 {JSON.stringify(todo)}
@@ -128,14 +142,29 @@ ref.push({[day] : x})
             },
             body: JSON.stringify(transformTodo(ref)),
         };
-
-
-
         let resp = await fetch('https://nr07mr1q3d.execute-api.us-east-1.amazonaws.com/Prod/hello/', options);
         let res = await resp.text();
 
-        //console.log(JSON.parse(res))
+    }
 
+  async function  getTasksFromDB()
+    {
+       // getTasksFromDB()
+        const url = 'https://nr07mr1q3d.execute-api.us-east-1.amazonaws.com/Prod/sam-app-getTasks-ALcUONi9w9EJ'
+        let monthYear ={
+            month: date.getMonth() +1,
+            year: date.getFullYear()
+        }
+
+        const queryString = new URLSearchParams(monthYear).toString();
+        const fullUrl = `${url}?${queryString}`;
+        
+        let resp = await fetch(fullUrl);
+        let res = await resp.json()
+        
+        
+       
+setSavedTasks(res);
     }
 }
 

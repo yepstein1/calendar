@@ -9,23 +9,24 @@ import { v4 as uuidv4 } from 'uuid';
  *  @param {Date} date passed in from App component
  * @param {function} setTodoInApp function passed in from App component to lift state up
  */
-export default function Month({year,date,setTodoInApp,todoList,getDefaultValue})
+export default function Month({year,date,setTodoInApp,getDefaultValue})
 {
   
     const daysOfMonth = {
-        0: 31,
-        1: 28,
-        2: 31,
-        3: 30,
-        4: 31,
-        5: 31,
-        6: 30,
-        7: 31,
-        8: 31,
-        9: 30,
-        10: 31,
-        11: 30,
-        21: 30
+        0: 31, // january
+        1: 28, //febuary
+        2: 31, // march
+        3: 30, //april
+        4: 31, //May
+        5: 30,//June 
+
+        6: 31, // July
+        7: 31, // August
+        8: 30, // September
+        9: 31, // October
+        10: 30, // November
+        11: 31, // December
+        
     }
 
       const month =date.getMonth()
@@ -35,6 +36,7 @@ export default function Month({year,date,setTodoInApp,todoList,getDefaultValue})
     const dayOfMonth = daysOfMonth[month]
    /**
     * days array of Days components
+    * 
     */
     let days = []
     for (let i = 0; i < dayOfMonth; i++) {
