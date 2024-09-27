@@ -1,6 +1,7 @@
 
 import Days from './Days'
 import { v4 as uuidv4 } from 'uuid';
+import EmptyDays from './EmptyDays';
 
 
 
@@ -28,8 +29,10 @@ export default function Month({year,date,setTodoInApp,getDefaultValue})
         11: 31, // December
         
     }
-
+console.log(` from month component : ${JSON.stringify(date)}`)
       const month =date.getMonth()
+      const firstDayOfMonth = new Date(date.getFullYear(),date.getMonth(),1).getDay()
+      console.log(` from month component : ${JSON.stringify(firstDayOfMonth)}`)
     /**
      * daysOfMonth Determine how many days in the current month
      */
@@ -39,6 +42,10 @@ export default function Month({year,date,setTodoInApp,getDefaultValue})
     * 
     */
     let days = []
+    for (let i =0 ; i<firstDayOfMonth;i++)
+    {
+        days.push(<EmptyDays/>)
+    }
     for (let i = 0; i < dayOfMonth; i++) {
         days.push(<Days dayOfMonth={i} date={date}   handleUpdateTodo={setTodoInApp}  year ={year} key ={uuidv4()}    getDefaultValue={getDefaultValue} />)
     }

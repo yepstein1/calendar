@@ -41,10 +41,16 @@ export default function Days({year,date,dayOfMonth,handleUpdateTodo}) {
                // note get month starts from 0 and days of month is also starts from 0
             if(s.getDate()== dayOfMonth)
                  {
-                   
+                
+                
+                   // let index = tasks.indexOf(x.id)
+                    
+                 
                     setSavedTasks((prevState)=>{
+                        let index = savedTasks.findIndex(x=> Object.keys(x)==x.id)
+                        console.log(`index in useffect ${index}`)
                        let newState = [...prevState,<div key ={x.taskid} >
-                        <input defaultValue={x.taskname} disabled={isDisabled}></input>
+                        <input defaultValue={x.taskname} disabled={savedTasksid[x.taskid]}></input>
                         <button  onClick ={() =>{handleEditButtonClicked(x.taskid)}}>Edit</button>    
                      
                         </div>]
@@ -57,11 +63,12 @@ export default function Days({year,date,dayOfMonth,handleUpdateTodo}) {
                     let temp = [...prevState,{[x.taskid] : true}]
                     return temp
                     })
+
                   //savedTasks.push()
                    }
                   //return savedTasks
             })
-            
+            console.log(`savedtaxid ${JSON.stringify(savedTasksid)}`)
         }
        // console.log(`tasks length ${tasks.length}`)
        
@@ -138,12 +145,14 @@ export default function Days({year,date,dayOfMonth,handleUpdateTodo}) {
 console.log(id)
 setSavedTasksid(prevState =>
 {
-    const findElt =(elt) => elt.id ===id
-    let index = prevState.findIndex(findElt)
-
-     let copy = prevState
-     copy[index].id = false
+    console.log(`id of saved tasks ${id}`) 
+      let copy = prevState
+     console.log(`copy ${JSON.stringify(copy)}`)
+     let objToBeEdited = copy.find(item=> Object.keys(item)==id)
+     console.log(`bjToBeEdited ${objToBeEdited}`)
+     objToBeEdited[id]=false
      //copy.id = false
+     console.log(`copy after changes ${JSON.stringify(copy)}`)
      return copy
 }
 )
