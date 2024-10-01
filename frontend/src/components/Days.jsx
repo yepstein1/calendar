@@ -12,13 +12,10 @@ import { taskContext } from "./context-tasks";
 export default function Days({year,date,dayOfMonth,handleUpdateTodo}) {
 
     const tasks = useContext(taskContext)
-    const [savedTasksid,setSavedTasksid] = useState([])
+   //const [savedTasksid,setSavedTasksid] = useState([])
     const [savedTasks,setSavedTasks] = useState([''])
-    const [isDisabled,setIsDisabled] = useState([])
-    
-
-  
-   
+   const [isDisabled,setIsDisabled] = useState([])
+     
      /**
      * State to store each days tasks
      */
@@ -26,59 +23,56 @@ export default function Days({year,date,dayOfMonth,handleUpdateTodo}) {
  // maybe loop through tasks and if there is a task with a cetain date then add it to the input form
  
  
+
  useEffect(()=>
  {
-  // console.log(`size of saved task array ${savedTasks.length}`)
+
+
 
     if(tasks.length>0)
         {
-          
-           
-        tasks.map((x)=> {
+            
+                  tasks.map((x)=> {
+                    console.log(`x ${JSON.stringify(x)}`)
                let s = new Date(x.date)
         
-            
                // note get month starts from 0 and days of month is also starts from 0
             if(s.getDate()== dayOfMonth)
                  {
-                
-                
-                   // let index = tasks.indexOf(x.id)
-                    
-                 
+
+                    setIsDisabled((prevState)=>
+                        {
+                        let temp = [...prevState,{[x.taskid] : true}]
+                        return temp
+                        })
+                   
+
+
+
+
+                   
                     setSavedTasks((prevState)=>{
-                        let index = savedTasks.findIndex(x=> Object.keys(x)==x.id)
-                        console.log(`index in useffect ${index}`)
-                       let newState = [...prevState,<div key ={x.taskid} >
-                        <input defaultValue={x.taskname} disabled={savedTasksid[x.taskid]}></input>
+                       let  index = prevState.length;
+                       
+                       let newState = [...prevState,<div key ={Object.keys(x)} >
+                        <input defaultValue={x.taskname} ></input>
                         <button  onClick ={() =>{handleEditButtonClicked(x.taskid)}}>Edit</button>    
                      
                         </div>]
+                      
                         return newState
 
                     })
                    
-                  setSavedTasksid((prevState)=>
-                    {
-                    let temp = [...prevState,{[x.taskid] : true}]
-                    return temp
-                    })
-
-                  //savedTasks.push()
-                   }
-                  //return savedTasks
+                   
+                  
+                } 
             })
-            console.log(`savedtaxid ${JSON.stringify(savedTasksid)}`)
+           
         }
-       // console.log(`tasks length ${tasks.length}`)
-       
+      
+      //disabled={isDisabled[index][x.taskid]}
  },[])
- 
- 
- 
- 
-
-       // array of inputs for each day
     let [inputArray, setInputArray] = useState([<input type="text"
         onChange={onTodoInputted}
         key={uuidv4()}  ></input>])
@@ -91,10 +85,6 @@ export default function Days({year,date,dayOfMonth,handleUpdateTodo}) {
 
     {savedTasks}
     {inputArray}
-  
-   
-  
-    
     <button className="button" onClick={addInputLIne}>
         
         Add new Line
@@ -102,9 +92,6 @@ export default function Days({year,date,dayOfMonth,handleUpdateTodo}) {
     </button>
     
     <button className="button" onClick={()=>{handleUpdateTodo(year,date.getMonth(),dayOfMonth,dailyTasks)
-
-
-
 
     }}>
         Save to App state
@@ -142,8 +129,8 @@ export default function Days({year,date,dayOfMonth,handleUpdateTodo}) {
 
     function handleEditButtonClicked(id)
     {
-console.log(id)
-setSavedTasksid(prevState =>
+
+setIsDisabled(prevState =>
 {
     console.log(`id of saved tasks ${id}`) 
       let copy = prevState
@@ -152,7 +139,7 @@ setSavedTasksid(prevState =>
      console.log(`bjToBeEdited ${objToBeEdited}`)
      objToBeEdited[id]=false
      //copy.id = false
-     console.log(`copy after changes ${JSON.stringify(copy)}`)
+    // console.log(`copy after changes ${JSON.stringify(copy)}`)
      return copy
 }
 )
