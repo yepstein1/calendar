@@ -29,10 +29,10 @@ export default function Month({year,date,setTodoInApp,getDefaultValue})
         11: 31, // December
         
     }
-console.log(` from month component : ${JSON.stringify(date)}`)
+
       const month =date.getMonth()
       const firstDayOfMonth = new Date(date.getFullYear(),date.getMonth(),1).getDay()
-      console.log(` from month component : ${JSON.stringify(firstDayOfMonth)}`)
+   
     /**
      * daysOfMonth Determine how many days in the current month
      */

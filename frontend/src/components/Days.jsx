@@ -1,4 +1,4 @@
-import {useState, useContext, useEffect} from "react";
+import {useState, useContext, useEffect,useReducer} from "react";
 import { v4 as uuidv4 } from 'uuid';
 import { taskContext } from "./context-tasks";
 
@@ -8,21 +8,102 @@ import { taskContext } from "./context-tasks";
  * @param {*} year passed in from App=> Month
  * @param {Date} date passed in from App=> Month
  * @param {function} handleUpdateTodo passed in from App=> Month to lift state up
+ * 
  */
-export default function Days({year,date,dayOfMonth,handleUpdateTodo}) {
 
+export default function Days({year,date,dayOfMonth,handleUpdateTodo}) {
+    
     const tasks = useContext(taskContext)
    //const [savedTasksid,setSavedTasksid] = useState([])
     const [savedTasks,setSavedTasks] = useState([''])
    const [isDisabled,setIsDisabled] = useState([])
-     
+   const initialState = {
+    isDisabled: [],
+    savedTasks: []
+  };
+
+   function taskReducer(state,action)
+{
+    //console.log(`action ${JSON.stringify(action.payload)}`)
+console.log(` testing disabled array : ${JSON.stringify(state.isDisabled[0])}`)
+    switch (action.type)
+    {
+        case 'ADD_TASK' :
+            {
+                const {task} = action.payload;
+             
+                //console.log(`date of calendar ${dayOfMonth}`)
+                let savedTaskDate = new Date(task.date)//.toDateString()
+              /*  console.log(`savedTaskDate  : ${savedTaskDate}`)
+                console.log(`savedTaskDate UTC  : ${savedTaskDate.getUTCDate()}`)
+                console.log(`date of task ${savedTaskDate.getDate()}`) */
+            
+
+                if(savedTaskDate.getUTCDate()===dayOfMonth+1)
+                {
+                   // console.log('hi from if statement')
+                    const newIsDisabled =[...state.isDisabled, {[task.taskid] :true}]
+                
+
+                const newSavedTask =(
+                    <div key ={task.taskid} >
+                    <input  id ={task.taskid} defaultValue={task.taskname} readOnly={newIsDisabled[state.savedTasks.length]?.[task.taskid]}></input>
+                    <button  onClick ={() =>{handleEditButtonClicked(task.taskid)}}>Edit</button>    
+                 
+                    </div>
+                );
+                return {
+                    ...state,
+                    isDisabled: newIsDisabled,
+                    savedTasks: [...state.savedTasks,newSavedTask]
+                };
+
+
+            }
+            return state
+            }
+
+            case 'ENABLE_EDITING':
+                {
+                    const{id }= action.payload
+                    const index = state.isDisabled.findIndex(x => Object.keys(x)== id)
+
+                    console.log(`id from reducer ${id}`)
+                    console.log(`index from reducer ${index}`)
+                    console.log(`isdisabled ${JSON.stringify(state.isDisabled)}`)
+                    let newState =state.isDisabled;
+                    newState[index][id]=false
+                    console.log(`isdisabled index id ${state.isDisabled[index][id]}`)
+                    let element = document.getElementById(636)
+ console.log(`element : ${element.disabled}`)
+                    
+                    return {
+                        ...state,
+                        isDisabled: newState,
+                       
+                    };
+                }
+
+
+
+
+            default:
+                return state;
+    }
+}
+const [state, dispatch] = useReducer(taskReducer, initialState);
+
      /**
      * State to store each days tasks
      */
  let [dailyTasks, setDailyTasks] = useState([])
  // maybe loop through tasks and if there is a task with a cetain date then add it to the input form
  
+ // Initial state for isDisabled and savedTasks
+
+
  
+
 
  useEffect(()=>
  {
@@ -32,50 +113,23 @@ export default function Days({year,date,dayOfMonth,handleUpdateTodo}) {
     if(tasks.length>0)
         {
             
-                  tasks.map((x)=> {
-                    console.log(`x ${JSON.stringify(x)}`)
-               let s = new Date(x.date)
-        
-               // note get month starts from 0 and days of month is also starts from 0
-            if(s.getDate()== dayOfMonth)
-                 {
-
-                    setIsDisabled((prevState)=>
-                        {
-                        let temp = [...prevState,{[x.taskid] : true}]
-                        return temp
-                        })
-                   
-
-
-
-
-                   
-                    setSavedTasks((prevState)=>{
-                       let  index = prevState.length;
-                       
-                       let newState = [...prevState,<div key ={Object.keys(x)} >
-                        <input defaultValue={x.taskname} ></input>
-                        <button  onClick ={() =>{handleEditButtonClicked(x.taskid)}}>Edit</button>    
-                     
-                        </div>]
-                      
-                        return newState
-
-                    })
-                   
-                   
-                  
-                } 
-            })
-           
-        }
+            
+               tasks.forEach((task) => {
+                  dispatch({
+                    type: 'ADD_TASK',
+                    payload: {
+                      task,
+                      dayOfMonth
+                    }
+                  });
+                });
+              }
       
-      //disabled={isDisabled[index][x.taskid]}
  },[])
     let [inputArray, setInputArray] = useState([<input type="text"
         onChange={onTodoInputted}
         key={uuidv4()}  ></input>])
+       
     return <div className="day" >
 
 
@@ -83,8 +137,9 @@ export default function Days({year,date,dayOfMonth,handleUpdateTodo}) {
  { new Date(date.getFullYear(),date.getMonth(),dayOfMonth+1).toLocaleString('default',{  weekday: 'long' } )} {date.toLocaleString('default', { month: 'long' })} {dayOfMonth+1}
     <br/>
 
-    {savedTasks}
+  {state.savedTasks}
     {inputArray}
+    
     <button className="button" onClick={addInputLIne}>
         
         Add new Line
@@ -127,22 +182,17 @@ export default function Days({year,date,dayOfMonth,handleUpdateTodo}) {
 
     }
 
-    function handleEditButtonClicked(id)
-    {
-
-setIsDisabled(prevState =>
+function handleEditButtonClicked(id)
 {
-    console.log(`id of saved tasks ${id}`) 
-      let copy = prevState
-     console.log(`copy ${JSON.stringify(copy)}`)
-     let objToBeEdited = copy.find(item=> Object.keys(item)==id)
-     console.log(`bjToBeEdited ${objToBeEdited}`)
-     objToBeEdited[id]=false
-     //copy.id = false
-    // console.log(`copy after changes ${JSON.stringify(copy)}`)
-     return copy
-}
-)
+console.log(id)
+    console.log(state)
+dispatch({type: 'ENABLE_EDITING',
+    payload: {
+      id,
+      
     }
+
+})
+}
 
 }
