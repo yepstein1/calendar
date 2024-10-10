@@ -44,7 +44,7 @@ export default function Month({year,date,setTodoInApp,getDefaultValue})
     let days = []
     for (let i =0 ; i<firstDayOfMonth;i++)
     {
-        days.push(<EmptyDays/>)
+        days.push(<EmptyDays  key ={uuidv4()} />)
     }
     for (let i = 0; i < dayOfMonth; i++) {
         days.push(<Days dayOfMonth={i} date={date}   handleUpdateTodo={setTodoInApp}  year ={year} key ={uuidv4()}    getDefaultValue={getDefaultValue} />)
