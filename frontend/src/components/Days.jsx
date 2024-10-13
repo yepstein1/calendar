@@ -16,14 +16,12 @@ export default function Days({ year, date, dayOfMonth, handleUpdateTodo }) {
     const tasks = useContext(taskContext)
     let savedTasks = []
     const [isDisabled, setIsDisabled] = useState([])
+    const [updatedTasks,setUpdatedTasks] = useState('')
     /**
     * State to store each days tasks
     */
     let [dailyTasks, setDailyTasks] = useState([])
-    // maybe loop through tasks and if there is a task with a cetain date then add it to the input form
-
-    // Initial state for isDisabled and savedTasks
-
+ 
     useEffect(() => {
         if (tasks.length > 0) {
             console.log(`day from props ${dayOfMonth}`)
@@ -58,10 +56,13 @@ export default function Days({ year, date, dayOfMonth, handleUpdateTodo }) {
 
                 let index = isDisabled.findIndex(y => Object.keys(y)[0] == x.taskid)
                 if (index >= 0) {
-                    console.log(` disabled :${isDisabled[index][x.taskid]}`)
+
+                    let editButtonText = isDisabled[index][x.taskid]? 'Edit' : 'Discard Changes ';
+                    
                     let elt = (<div key={x.taskid}>
-                        <input defaultValue={x.taskname} disabled={isDisabled[index][x.taskid]}></input>
-                        <button onClick={() => { handleEditButtonClicked(x.taskid) }}>Edit</button>
+                        <input defaultValue={x.taskname} onChange ={(e) => {handleSavedTasksChange(e,x.taskid)}} disabled={isDisabled[index][x.taskid]}></input>
+                        <button onClick={() => { handleEditButtonClicked(x.taskid) }}> {editButtonText}</button>
+                        <button onClick={() => { handleUpdateButtonClicked(x.taskid) }}>Submit changes</button>
 
                     </div>)
 
@@ -84,7 +85,7 @@ export default function Days({ year, date, dayOfMonth, handleUpdateTodo }) {
 
             {savedTasks}
             {inputArray}
-
+<br></br>
             <button className="button" onClick={addInputLIne}>
 
                 Add new Line
@@ -131,13 +132,49 @@ export default function Days({ year, date, dayOfMonth, handleUpdateTodo }) {
             
             if (index >= 0) {
                 let newState = [...prevState];
-                newState[index][id] = false
+                newState[index][id] = !newState[index][id]
                 return newState
             }
             return prevState;
         }
         )
 
+    }
+
+   async  function handleUpdateButtonClicked(id)
+    {
+
+
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+
+
+            },
+            body:JSON.stringify( updatedTasks
+            ),
+        };
+        let resp = await fetch('https://53ysp8tu5j.execute-api.us-east-1.amazonaws.com/Prod/', options);
+        let res = await resp.text();
+        return res;
+
+    }
+
+    function handleSavedTasksChange(e,id)
+    {
+        console.log(`event : ${e.target.value}`)
+        setUpdatedTasks(() =>{
+        return    {'id':id,
+          'taskname':  e.target.value}
+        }
+        
+         
+            
+
+          
+        
+        )
     }
 
 }

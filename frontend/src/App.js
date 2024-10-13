@@ -44,7 +44,7 @@ function App() {
     let  setTodoInApp =  async (year, month, dayOfMonth, dailytask) => {
         
         // need to fix when user clicks save and then adds another line to the same date and presses button again
-       // let obj = {}
+     
        
         let day = new Date(year, month, dayOfMonth+1)
     day= day.toISOString().split('T')[0]
@@ -65,11 +65,7 @@ ref.push({[day] : x})
     }
 
     let getDefaultValue = (param)=> {
-// currently just trying to see if I can get the most up to date value of todo in day comp
-       // console.log(JSON.stringify(todo))
-        // console.log('from  get defaultValue from parent component`') 
-       
-       // return param.toString()
+
       let res;
        todo.forEach(element => {
         res += element
@@ -92,7 +88,7 @@ ref.push({[day] : x})
 return temp
 
         })
-        //getTasksFromDB()
+      
       
 
        
@@ -102,10 +98,10 @@ return temp
 
     return (
         <taskContext.Provider value={savedTasks}>
-            <p>created functionality that gets saved tasks from db and dsaved it to state and context - now need to read them into correct dates</p>
+            <p>working on submitting edited tasks</p>
 <div>
 
-{JSON.stringify(todo)}
+
 
             <div className='button-parent'>
                 <button className='button-change-month' onClick={() => { changeMonth(-1) }}>  Previous Month</button>
@@ -128,7 +124,7 @@ return temp
     );
 
 
-    //need to think about logic of arangement of components
+ 
 
     async function persitsState(ref) {
         
@@ -149,7 +145,7 @@ return temp
 
   async function  getTasksFromDB()
     {
-       // getTasksFromDB()
+      
         const url = 'https://nr07mr1q3d.execute-api.us-east-1.amazonaws.com/Prod/sam-app-getTasks-ALcUONi9w9EJ'
         let monthYear ={
             month: date.getMonth() +1,
