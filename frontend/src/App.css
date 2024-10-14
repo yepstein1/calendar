@@ -32,7 +32,7 @@ body{
  
   border-style: solid;
   border-color: red;
- min-width: 350px;
+ min-width: 400px;
   min-height: 60px;
  
 }
@@ -41,6 +41,12 @@ body{
 .button-parent {
   text-align: center;
 }
+
+.edit-parent {
+  padding-left:   40px;
+  width: 400px;
+}
+
 
 .submit-button-cont {
 
@@ -76,15 +82,7 @@ color:white;
 }
 
 .button:focus{
-
-  
     background-color:  whitesmoke;
-  
-    
-    
-  
-    
-    
   }
 
 

@@ -17,6 +17,8 @@ export default function Days({ year, date, dayOfMonth, handleUpdateTodo }) {
     let savedTasks = []
     const [isDisabled, setIsDisabled] = useState([])
     const [updatedTasks,setUpdatedTasks] = useState('')
+    const [visibilityState,setVisibilityState] = useState([])
+    
     /**
     * State to store each days tasks
     */
@@ -38,6 +40,12 @@ export default function Days({ year, date, dayOfMonth, handleUpdateTodo }) {
                         let temp = [...prevState, { [x.taskid]: true }]
                         return temp
                     })
+
+                    setVisibilityState((prevState) =>
+                    {
+                        let temp = [...prevState, { [x.taskid]: false }]
+                        return temp
+                    })
                 }
             })
 
@@ -57,12 +65,13 @@ export default function Days({ year, date, dayOfMonth, handleUpdateTodo }) {
                 let index = isDisabled.findIndex(y => Object.keys(y)[0] == x.taskid)
                 if (index >= 0) {
 
-                    let editButtonText = isDisabled[index][x.taskid]? 'Edit' : 'Discard Changes ';
+                    let editButtonText = isDisabled[index][x.taskid]? 'Edit' : 'Discard';
+                   // const visibilityState = isDisabled[index][x.taskid] ? 'hidden' : 'false';
                     
-                    let elt = (<div key={x.taskid}>
-                        <input defaultValue={x.taskname} onChange ={(e) => {handleSavedTasksChange(e,x.taskid)}} disabled={isDisabled[index][x.taskid]}></input>
-                        <button onClick={() => { handleEditButtonClicked(x.taskid) }}> {editButtonText}</button>
-                        <button onClick={() => { handleUpdateButtonClicked(x.taskid) }}>Submit changes</button>
+                    let elt = (<div key={x.taskid} className="edit-parent" >
+                        <input defaultValue={x.taskname} onChange ={(e) => {handleSavedTasksChange(e,x.taskid)}} disabled={isDisabled[index][x.taskid]} ></input>
+                        <button onClick={() => { handleEditButtonClicked(x.taskid) }} > {editButtonText}</button>
+                        <button onClick={() => { handleUpdateButtonClicked(x.taskid) } } style={{visibility:visibilityState[index][x.taskid] ?'visible' : 'hidden'}} >Save</button>
 
                     </div>)
 
@@ -110,6 +119,7 @@ export default function Days({ year, date, dayOfMonth, handleUpdateTodo }) {
         let input = <input onChange={onTodoInputted}
 
             key={uuidv4()} type="text"></input>
+    
         setInputArray([...inputArray, input])
 
     }
@@ -139,6 +149,22 @@ export default function Days({ year, date, dayOfMonth, handleUpdateTodo }) {
         }
         )
 
+        setVisibilityState(prevState => {
+
+            let index = prevState.findIndex(y => {
+
+               return Object.keys(y)[0] == id
+            })
+            
+            if (index >= 0) {
+                let newState = [...prevState];
+                newState[index][id] = !  newState[index][id] 
+                return newState
+            }
+            return prevState;
+        }
+        )
+
     }
 
    async  function handleUpdateButtonClicked(id)
@@ -156,8 +182,8 @@ export default function Days({ year, date, dayOfMonth, handleUpdateTodo }) {
             ),
         };
         let resp = await fetch('https://53ysp8tu5j.execute-api.us-east-1.amazonaws.com/Prod/', options);
-        let res = await resp.text();
-        return res;
+        let res = await resp;
+       return res;
 
     }
 

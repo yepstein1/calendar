@@ -29,11 +29,6 @@ function App() {
     },[date]
     )
    
-
-    
-
-
-
     /**
      * 
      * @param {*} year - the year associated with this task
@@ -89,11 +84,6 @@ return temp
 
         })
       
-      
-
-       
-        
- 
     }
 
     return (
