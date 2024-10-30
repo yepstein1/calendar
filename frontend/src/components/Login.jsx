@@ -44,16 +44,14 @@ import getUserIdFromBackend from '../getUseridFromBackend';
        
 
        
-// maybe rename funtion 
-console.log(`first name from login submit ${firstName}`)
-// this object setting seems to work
+
 let userObj ={
   'firstname' : firstName,
   'lastname' : lastName,
     email,
     
 }
-console.log(`userObj ${JSON.stringify(userObj)}`)
+
 //let userId =  getUserId(userObj);
 //let userId =userIdProm.then()
 
@@ -61,11 +59,10 @@ console.log(`userObj ${JSON.stringify(userObj)}`)
 getUserIdFromBackend(userObj)
     
         let id = localStorage.getItem('userId');
-        console.log(`user id :  ${JSON.stringify(id)}`)
+       
 
         localStorage.setItem('user',JSON.stringify(userObj))
    
-
         /**
          * let App know that user is logged in
          */

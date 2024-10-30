@@ -11,6 +11,7 @@ import { taskContext } from './components/context-tasks';
 
 
 import Month from './components/Month';
+import Login from './components/Login';
 
 
 function App() {
@@ -22,13 +23,23 @@ function App() {
   
     let [todo, setTodo] = useState([]);
     let [savedTasks,setSavedTasks]  = useState([]);
+    let [user,setUser] = useState()
 
     useEffect(()=>
     {
+        const loggedInUser = localStorage.getItem('user')
+            setUser(loggedInUser)
         getTasksFromDB()
     },[date]
     )
-   
+   /**
+    * to track whether is logged in
+    * @param userName 
+    */
+    let  setUserfunc = (userName) =>
+    {
+        setUser(userName)
+    }
     /**
      * 
      * @param {*} year - the year associated with this task
@@ -39,27 +50,24 @@ function App() {
     let  setTodoInApp =  async (year, month, dayOfMonth, dailytask) => {
         
         // need to fix when user clicks save and then adds another line to the same date and presses button again
-     
+   
        
         let day = new Date(year, month, dayOfMonth+1)
     day= day.toISOString().split('T')[0]
     let ref=[];
-    console.log(day)
+    
     dailytask.forEach(x=> 
     {
 ref.push({[day] : x})
     }
     )
   
-        
-
-       
         persitsState(ref)
 
 
     }
 
-    let getDefaultValue = (param)=> {
+    let getDefaultValue = ()=> {
 
       let res;
        todo.forEach(element => {
@@ -86,31 +94,36 @@ return temp
       
     }
 
+    let elt = <> <div className='button-parent'>
+        <button className='button-change-month' onClick={() => { changeMonth(-1) }}>  Previous Month</button>
+        <button className='button-change-month' onClick={() => { changeMonth(1) }}> Next Month</button>
+    </div>
+    < div >
+    <Month year={date.getFullYear()} date={date} setTodoInApp={setTodoInApp} key={uuidv4()}  getDefaultValue={getDefaultValue} />;
+  
+        <br />
+
+       
+        <br />
+    </div> </>
+
     return (
+        <div>  
         <taskContext.Provider value={savedTasks}>
-            <p>working on submitting edited tasks</p>
-<div>
+      
+<>
+{!user  &&<Login setUserfunc={setUserfunc} />}
 
 
+{user && elt}
+</>
 
-            <div className='button-parent'>
-                <button className='button-change-month' onClick={() => { changeMonth(-1) }}>  Previous Month</button>
-                <button className='button-change-month' onClick={() => { changeMonth(1) }}> Next Month</button>
-            </div>
-            < div >
-            <Month year={date.getFullYear()} date={date} setTodoInApp={setTodoInApp} key={uuidv4()}  getDefaultValue={getDefaultValue} />;
-          
-                <br />
 
-               
-                <br />
-            </div>
-
-        </div>
+      
 
         </taskContext.Provider>
         
-
+        </div>
     );
 
 
@@ -118,7 +131,7 @@ return temp
 
     async function persitsState(ref) {
         
-
+   
         const options = {
             method: 'POST',
             headers: {
@@ -129,29 +142,30 @@ return temp
             body: JSON.stringify(transformTodo(ref)),
         };
         let resp = await fetch('https://nr07mr1q3d.execute-api.us-east-1.amazonaws.com/Prod/hello/', options);
-        let res = await resp.text();
+        
 
     }
 
   async function  getTasksFromDB()
     {
+        
       
-        const url = 'https://nr07mr1q3d.execute-api.us-east-1.amazonaws.com/Prod/sam-app-getTasks-ALcUONi9w9EJ'
+        const url = 'https://nr07mr1q3d.execute-api.us-east-1.amazonaws.com/Prod/get-getTasks-UvTPPAhHvaUd'
         let monthYear ={
             month: date.getMonth() +1,
-            year: date.getFullYear()
-        }
-
+            year: date.getFullYear(),
+            userId : localStorage.getItem("userId")
+        } 
         const queryString = new URLSearchParams(monthYear).toString();
-        const fullUrl = `${url}?${queryString}`;
-        
-        let resp = await fetch(fullUrl);
-        let res = await resp.json()
-        
-        
-       
+        const fullUrl = `${url}?${queryString}`;    
+        let resp = (await fetch(fullUrl));
+        let res = await resp.json()     
 setSavedTasks(res);
     }
+    
+
+
+   
 }
 
 

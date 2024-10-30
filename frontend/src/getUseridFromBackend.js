@@ -6,7 +6,6 @@ export default async function getUserIdFromBackend(userInfo)
     const fullUrl = `${url}?${queryString}`;
     let resp = await fetch(fullUrl);
     let res = await resp.json();
-    console.log(` res in getUserIdFromBackend ${JSON.stringify(res)}`)
     localStorage.setItem('userId',res.userid)
    return  res;
 }
