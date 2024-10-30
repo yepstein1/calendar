@@ -10,9 +10,8 @@ import EmptyDays from './EmptyDays';
  *  @param {Date} date passed in from App component
  * @param {function} setTodoInApp function passed in from App component to lift state up
  */
-export default function Month({year,date,setTodoInApp,getDefaultValue})
-{
-  
+export default function Month({ year, date, setTodoInApp, getDefaultValue }) {
+
     const daysOfMonth = {
         0: 31, // january
         1: 28, //febuary
@@ -27,32 +26,31 @@ export default function Month({year,date,setTodoInApp,getDefaultValue})
         9: 31, // October
         10: 30, // November
         11: 31, // December
-        
+
     }
 
-      const month =date.getMonth()
-      const firstDayOfMonth = new Date(date.getFullYear(),date.getMonth(),1).getDay()
-   
+    const month = date.getMonth()
+    const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1).getDay()
+
     /**
      * daysOfMonth Determine how many days in the current month
      */
     const dayOfMonth = daysOfMonth[month]
-   /**
-    * days array of Days components
-    * 
-    */
+    /**
+     * days array of Days components
+     * 
+     */
     let days = []
-    for (let i =0 ; i<firstDayOfMonth;i++)
-    {
-        days.push(<EmptyDays  key ={uuidv4()} />)
+    for (let i = 0; i < firstDayOfMonth; i++) {
+        days.push(<EmptyDays key={uuidv4()} />)
     }
     for (let i = 0; i < dayOfMonth; i++) {
-        days.push(<Days dayOfMonth={i} date={date}   handleUpdateTodo={setTodoInApp}  year ={year} key ={uuidv4()}    getDefaultValue={getDefaultValue} />)
+        days.push(<Days dayOfMonth={i} date={date} handleUpdateTodo={setTodoInApp} year={year} key={uuidv4()} getDefaultValue={getDefaultValue} />)
     }
     return (
-        <div className="box" >        
-                {days}
-             
+        <div className="box" >
+            {days}
+
         </div>
     );
 }

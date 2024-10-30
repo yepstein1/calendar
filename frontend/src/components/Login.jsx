@@ -1,68 +1,60 @@
-import  {useState} from 'react'
+import { useState } from 'react'
 import getUserIdFromBackend from '../getUseridFromBackend';
- export default   function   Login({setUserfunc}){
+export default function Login({ setUserfunc }) {
 
-    const [email,setEmail] = useState()
-    const [firstName,setFirstName] = useState()
-    const [lastName,setLastName] = useState()
+    const [email, setEmail] = useState()
+    const [firstName, setFirstName] = useState()
+    const [lastName, setLastName] = useState()
 
     return (
         <div className='loginform'>
-            <h2> Login   
+            <h2> Login
             </h2>
             <input className='inputlogin'
-            
-            placeholder="Enter First Name"
-            value ={firstName}
-            onChange ={(e)=>setFirstName(e.target.value)}
+
+                placeholder="Enter First Name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
             ></input>
-<br/>
-<input className='inputlogin'
-        
-            placeholder="Enter Last Name"
-            value ={lastName}
-            onChange ={(e)=>setLastName(e.target.value)}
+            <br />
+            <input className='inputlogin'
+
+                placeholder="Enter Last Name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
             ></input>
-            <br/>
+            <br />
 
 
-<input className='inputlogin'
-            type ="email"
-            placeholder="Enter email"
-            value ={email}
-            onChange ={(e)=>setEmail(e.target.value)}
+            <input className='inputlogin'
+                type="email"
+                placeholder="Enter email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
             ></input>
 
-<br/>
+            <br />
 
-            <button onClick ={onSubmit}>Login</button>
-            </div>  
+            <button onClick={onSubmit}>Login</button>
+        </div>
     );
 
-    function onSubmit()
-    {
-       
-
-       
-
-let userObj ={
-  'firstname' : firstName,
-  'lastname' : lastName,
-    email,
-    
-}
-
-//let userId =  getUserId(userObj);
-//let userId =userIdProm.then()
+    function onSubmit() {
 
 
-getUserIdFromBackend(userObj)
-    
-        let id = localStorage.getItem('userId');
-       
 
-        localStorage.setItem('user',JSON.stringify(userObj))
-   
+
+        let userObj = {
+            'firstname': firstName,
+            'lastname': lastName,
+            email,
+
+        }
+
+
+        getUserIdFromBackend(userObj)
+        localStorage.setItem('user', JSON.stringify(userObj))
+
         /**
          * let App know that user is logged in
          */
@@ -70,5 +62,5 @@ getUserIdFromBackend(userObj)
     }
 }
 
-  
-    
+
+
