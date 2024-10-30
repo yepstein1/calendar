@@ -3,7 +3,10 @@ export function transformTodo(data) {
     //console.log(result);
     data = data.map(item => {
         item = Object.entries(item).flat();
-        item.unshift(1);
+        //userId added here
+        let userId = localStorage.getItem('userId');
+       // userOjbect = JSON.parse(userOjbect)
+        item.unshift(userId);
 
         item.unshift('DEFAULT');
 

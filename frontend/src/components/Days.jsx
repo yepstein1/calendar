@@ -71,7 +71,7 @@ export default function Days({ year, date, dayOfMonth, handleUpdateTodo }) {
                     let elt = (<div key={x.taskid} className="edit-parent" >
                         <input defaultValue={x.taskname} onChange ={(e) => {handleSavedTasksChange(e,x.taskid)}} disabled={isDisabled[index][x.taskid]} ></input>
                         <button onClick={() => { handleEditButtonClicked(x.taskid) }} > {editButtonText}</button>
-                        <button onClick={() => { handleUpdateButtonClicked(x.taskid) } } style={{visibility:visibilityState[index][x.taskid] ?'visible' : 'hidden'}} >Save</button>
+                        <button onClick={() => { handleUpdateButtonClicked(index,x.taskid) } } style={{visibility:visibilityState[index][x.taskid] ?'visible' : 'hidden'}} >Save</button>
 
                     </div>)
 
@@ -105,7 +105,7 @@ export default function Days({ year, date, dayOfMonth, handleUpdateTodo }) {
                 handleUpdateTodo(year, date.getMonth(), dayOfMonth, dailyTasks)
 
             }}>
-                Save to App state
+                Save
 
             </button>
 
@@ -167,22 +167,26 @@ export default function Days({ year, date, dayOfMonth, handleUpdateTodo }) {
 
     }
 
-   async  function handleUpdateButtonClicked(id)
+   async  function handleUpdateButtonClicked(index,id)
     {
-
 
         const options = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-
-
             },
             body:JSON.stringify( updatedTasks
             ),
         };
         let resp = await fetch('https://53ysp8tu5j.execute-api.us-east-1.amazonaws.com/Prod/', options);
         let res = await resp;
+        let newVisibilityState = [...visibilityState];
+        newVisibilityState[index][id] =false;
+    setVisibilityState(newVisibilityState);
+    let newIsDisabledState =[...isDisabled]
+    newIsDisabledState[index][id]=true;
+    setIsDisabled(newIsDisabledState);
+     
        return res;
 
     }
@@ -202,5 +206,7 @@ export default function Days({ year, date, dayOfMonth, handleUpdateTodo }) {
         
         )
     }
+
+   
 
 }

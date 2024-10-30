@@ -62,7 +62,7 @@ body{
   
 bottom:0;
 background-color:  #4681f4;
-border-radius: 100px;
+
   border: none;
   display: table-cell; vertical-align: bottom;
 
@@ -74,7 +74,8 @@ color:white;
   margin-left: auto; margin-right:auto;
   width: 100px;
   background-color:  #4681f4;
-  border-radius: 500px;
+  border-radius: 50px;
+  
   border: none;
 
   
@@ -104,3 +105,12 @@ color:white;
     
     
   }
+  .loginform {
+    width: 90%;
+  margin: 50px auto;
+  text-align: center;
+ 
+  position: relative;
+  }
+
+  
