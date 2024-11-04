@@ -1,4 +1,4 @@
-export default async function getUserIdFromBackend(userInfo) {
+export default async function getUserIdFromBackend(userInfo,setUserfunc) {
     const url = 'https://j82nb6pzfe.execute-api.us-east-1.amazonaws.com/Prod/hello';
 
     const queryString = new URLSearchParams(userInfo).toString()
@@ -6,5 +6,6 @@ export default async function getUserIdFromBackend(userInfo) {
     let resp = await fetch(fullUrl);
     let res = await resp.json();
     localStorage.setItem('userId', res.userid)
+    setUserfunc(res.userid)
     return res;
 }

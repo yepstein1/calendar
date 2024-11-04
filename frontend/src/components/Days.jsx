@@ -26,13 +26,13 @@ export default function Days({ year, date, dayOfMonth, handleUpdateTodo }) {
  
     useEffect(() => {
         if (tasks.length > 0) {
-            console.log(`day from props ${dayOfMonth}`)
+         
 
             tasks.map((x) => {
-                console.log(`x ${JSON.stringify(x)}`)
+            
 
                 let s = new Date(x.date)
-                console.log(`day from context ${s.getUTCDate()}`)
+              
                 // note get month starts from 0 and days of month is also starts from 0
                 if (s.getUTCDate() == dayOfMonth + 1) {
 
@@ -132,7 +132,7 @@ export default function Days({ year, date, dayOfMonth, handleUpdateTodo }) {
     }
 
     function handleEditButtonClicked(id) {
-        console.log(id)
+      
         setIsDisabled(prevState => {
 
             let index = prevState.findIndex(y => {
@@ -193,7 +193,7 @@ export default function Days({ year, date, dayOfMonth, handleUpdateTodo }) {
 
     function handleSavedTasksChange(e,id)
     {
-        console.log(`event : ${e.target.value}`)
+      
         setUpdatedTasks(() =>{
         return    {'id':id,
           'taskname':  e.target.value}

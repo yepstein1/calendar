@@ -113,4 +113,16 @@ color:white;
   position: relative;
   }
 
+  .login{
+    background: none;
+    border: none;
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  
+  .error-message{
+    color:red
+  }
+
   

@@ -26,7 +26,7 @@ function App() {
     let [user, setUser] = useState()
 
     useEffect(() => {
-        const loggedInUser = localStorage.getItem('user')
+        const loggedInUser = localStorage.getItem('userId')
         setUser(loggedInUser)
         getTasksFromDB()
     }, [date]
@@ -35,8 +35,8 @@ function App() {
      * to track whether is logged in
      * @param userName 
      */
-    let setUserfunc = (userName) => {
-        setUser(userName)
+    let setUserfunc = (userId) => {
+        setUser(userId)
     }
     /**
      * 
